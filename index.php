@@ -11,14 +11,22 @@ require_once("connection.php");
     <title>Document</title>
 </head>
 <body>
-    <table width="1000" align="center" border="0" cellpadding="0" cellspacing="0">
-        <tr height="150">
-            <td align="center"><img src="images/banner_1.jpg" border="0"></td>
-        </tr>
-    </table>
-    
+	<?php
+	$ReklamSorgusu		=	$VeritabaniBaglantisi->prepare("SELECT * FROM banners ORDER BY banner_show ASC LIMIT 1");
+	$ReklamSorgusu->execute();
+	$ReklamSayisi		=	$ReklamSorgusu->rowCount();
+	$ReklamKaydi		=	$ReklamSorgusu->fetch(PDO::FETCH_ASSOC);
+	?>
+	<table width="1000" align="center" border="0" cellpadding="0" cellspacing="0">
+		<tr height="150">
+			<td align="center"><img src="images/<?php echo $ReklamKaydi["banner_file"]; ?>" border="0"></td>
+		</tr>
+	</table>
 </body>
 </html>
 <?php
-$VeritabaniBaglantisi   =   null;
+$ReklamGuncelle		=	$VeritabaniBaglantisi->prepare("UPDATE banners SET banner_show=banner_show+1 WHERE id = ? LIMIT 1");
+$ReklamGuncelle->execute([$ReklamKaydi["id"]]);
+
+$VeritabaniBaglantisi	=	null;
 ?>
